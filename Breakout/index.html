@@ -113,15 +113,15 @@
 		}
 
 		// The Bricks
-		var bricksPerRow = 8;
+		var bricksPerRow = 12;
 		var brickHeight = 20;
 		var brickWidth = canvas.width / bricksPerRow;
 
 		// Brick Layout: 1 is orange, 2 is green, 3 is gray, 0 means no brick 
-		var bricks = [ [ 1, 1, 1, 1, 1, 1, 1, 2 ], 
-		               [ 1, 1, 3, 1, 0, 1, 1, 1 ],
-		               [ 2, 1, 2, 1, 2, 1, 0, 1 ], 
-		               [ 1, 2, 1, 1, 1, 3, 1, 1 ] ];
+		var bricks = [ [ 1, 0, 1, 1, 0, 1, 2, 2, 2, 1, 1, 1], 
+		               [ 0, 1, 0, 1, 1, 1, 2, 0, 2, 0, 1, 0],
+		               [ 0, 1, 0, 1, 1, 1, 2, 0, 2, 0, 1, 0], 
+		               [ 0, 1, 0, 1, 0, 1, 2, 2, 2, 0, 1, 0]];
 
 		// iterate through the bricks array and draw each brick using drawBrick()
 		function createBricks() {
