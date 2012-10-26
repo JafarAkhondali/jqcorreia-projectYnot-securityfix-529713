@@ -101,7 +101,9 @@
 		    	console.log("Above");
 		    	//Check if the ball is within the paddle width
 		    	if ((ballX + ballDeltaX >= paddleX) && (ballX + ballDeltaX <= paddleX + paddleWidth)){
-		    		angle = -angle;
+		    		var whereX = (ballX + ballDeltaX) - paddleX;
+					angle = 140 - (whereX * (100 / paddleWidth)); // This make for a range of possible angles of [140,40]
+					console.log(whereX, angle);
 		    	}
 		    }
  		     
