@@ -8,8 +8,8 @@
 <script src="javascripts/jquery.hotkeys.js" type="text/javascript"></script>
 <script src="javascripts/key_status.js" type="text/javascript"></script> 
 <script>
-	function toDeg(rad) {
-		return rad * Math.PI / 180;
+	function toRad(deg) {
+		return deg * Math.PI / 180;
 	}
 	$(function() {
 
@@ -79,8 +79,8 @@
 		}
 		
 		function moveBall(){
-  		    ballDeltaX = speed * Math.cos(toDeg(angle));
-		    ballDeltaY = -speed * Math.sin(toDeg(angle));
+  		    ballDeltaX = speed * Math.cos(toRad(angle));
+		    ballDeltaY = -speed * Math.sin(toRad(angle));
 		    		    
 		    //First check if the ball touches any boundry
 		    
