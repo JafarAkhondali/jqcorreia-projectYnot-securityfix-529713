@@ -90,11 +90,11 @@ function keyEvents() {
 		player.ax = 300;
 	}
 	if(keymap[K_W]) {
-		if(player.vy == 0)
+		if(base)
 			player.vy = -400;
 		if(onawall) {
-			player.vx = 75;
-			player.vy = -600;
+			player.vx = (onawall == 1 ? -75 : 75);
+			player.vy = -600 
 		}
 	}
 	if(keymap[K_SHIFT]) {
@@ -124,14 +124,18 @@ function update(time) {
     player.vx = player.vx + ax * time;
     player.vy = player.vy - ay * time;
     
-    onawall = false;
+    onawall = 0;
+    base = false;
     for(var i in blockList) {
     	
     	var block = blockList[i];
     	var res = checkOverlap(player.x + player.vx * time, player.y, 10, 10, block.x, block.y, blockW, blockH);
     	if(res) {
     		player.vx = 0;
-    		onawall = true;
+    		if(player.x < block.x + blockW)
+    			onawall = 1;
+    		if(player.x + 10 > block.x)
+    			onawall = 2;
     	}
     }
     player.x = player.x + player.vx * time;
@@ -140,8 +144,9 @@ function update(time) {
     	var block = blockList[i];
     	var res = checkOverlap(player.x, player.y + player.vy * time, 10, 10, block.x, block.y, blockW, blockH);
     	if(res) {
-    		console.log("asd");
     		player.vy = 0;
+    		if(player.y < block.y + blockH)
+    			base = true;
     	}
     }
     player.y = player.y + player.vy * time;
