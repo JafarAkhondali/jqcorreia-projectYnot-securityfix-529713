@@ -20,6 +20,9 @@
 		// different browsers support different contexts. All support 2d
 		var context = canvas.getContext('2d');
 		
+		var date = new Date();
+		var time = date.getTime();
+		var bonus = 1;
 		
 		//The Powers
 		powers = [];
@@ -27,35 +30,92 @@
 		function Power(I){
 			I = I || {};
 			
-			locked = true;
+			I.locked = true;
 			
 			I.x = 0;
 			I.y = 0;
+			I.xVelocity = 0;
+			I.yVelocity = 5;
 			I.type = 'PLUS';
-			I.draw = function() {
-				context.arc(I.x, I.y, 15, 0, Math.PI * 2, true);
-			}
+			I.active = true;
 			
+			I.inBounds = function() {
+			    return I.x >= 0 && I.x <= canvas.width &&
+			      I.y >= 0 && I.y <= canvas.height;
+			  };
+			
+			I.draw = function (){
+				//console.log("X=",this.x," ; Y=",this.y);
+				context.beginPath();
+				switch(I.type){
+					case 'PLUS':
+						context.fillStyle = 'rgb(200,0,200)';
+						break;
+					case 'MINUS':
+						context.fillStyle = 'rgb(100,100,100)';
+				}
+				
+				context.arc(this.x, this.y, 7, 0, Math.PI * 2, true);
+				context.fill();
+			};
+						
+			I.update = function (){
+				if (!I.locked) {
+					I.x += I.xVelocity;
+				    I.y += I.yVelocity;
+				    
+				    I.active = I.active && I.inBounds();
+				}
+				//Condition to check if the powerup collides with the paddle
+			    if (I.y + I.yVelocity + 7 >= paddleY){
+			    	console.log("Bonus Above");
+			    	//Check if the powerup is within the paddle width
+			    	if ((I.x + I.xVelocity >= paddleX) && (I.x + I.xVelocity <= paddleX + paddleWidth)){
+			    		switch(I.type){
+			    			case 'MINUS':
+			    				//console.log("MINUS");
+			    				bonus=2;
+			    				paddleWidth = paddleWidth * 0.66;
+			    				console.log("PaddleWidth = ",paddleWidth);
+			    				break;
+			    			case 'PLUS':
+			    				//console.log("PLUS");
+			    				bonus=0.5; 
+			    				paddleWidth = paddleWidth * 1.33;
+			    				break;
+			    		}
+			    		I.active = false;
+			    	}
+			    }
+				
+			};
+			
+			return I;
 		}
 		
 		
 		
 		
 		function addPower(posx, posy, powertype) {
+						
+			//console.log(posx, posy, powertype);
 			
-			powers.push(Power({
-				x: posx,
-				y: posy,
-				type: powertype
-				}));
+			var p = Power();
 			
+			p.x = posx;
+			p.y = posy;
+			p.type = powertype;
 			
+			powers.push(p);
+						
 		}
 		
 		function drawPowers(){
-			//powers.forEach(function(power) {
-			//	power.draw();
-			//});
+			//console.log(powers[0].x);
+			powers.forEach(function(power){
+				//console.log("X=",power.x," ; Y=",power.y);
+				power.draw();
+			});
 		}
 		
 		
@@ -266,11 +326,24 @@
 
 		    if (bricks[i][j]>0){ 
 		        // The brick is weakened but still around. Give a single point.
-		        score++;
+		        score += 1*bonus;
 		    } else {
 		        // give player an extra point when the brick disappears
-		        score += 2;     
+		        score += 2*bonus;     
+		        checkPowerUp(i,j);
 		    }
+		}
+		
+		function checkPowerUp(i,j){
+			powers.forEach(function (p){
+				var brickX = j * brickWidth;
+                var brickY = i * brickHeight;
+                
+				if (p.x>brickX && p.x<brickX+brickWidth && p.y>brickY && p.y<brickY+brickHeight) {
+					p.locked = false;
+				}
+			})
+			
 		}
 
 		//The ScoreBoard
@@ -294,13 +367,20 @@
 			
 			
 			createBricks();
-			drawPowers();
 			displayScoreBoard();
 			movePaddle();
 			moveBall();
 			drawBall();
 			drawPaddle();
 			
+			
+			powers.forEach(function (power){
+				power.update();
+			})
+			powers = powers.filter(function(power) {
+				return power.active;
+			})
+			drawPowers();
 			
 		}
 		
@@ -313,9 +393,10 @@
 			paddleMove = 'NONE';
 			paddleDeltaX = 0;
 			gameloop = setInterval(animate,1000/60);
-			addPower(15,15,'PLUS');
-			
-			
+			addPower(15,10,'MINUS');
+			addPower(brickWidth+15,brickHeight*3+10,'PLUS');
+			addPower(5*brickWidth+15,brickHeight*3+10,'PLUS');
+			addPower(8*brickWidth+15,brickHeight*3+10,'MINUS');
 				
 				
 		}
