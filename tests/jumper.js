@@ -31,6 +31,13 @@ var map = [[1,1,1,1,1,1,1,1,1,1],
            [1,0,0,0,0,0,1,0,0,1],
            [1,1,1,1,1,1,1,1,1,1]];
 
+var rope = {
+	x : 0,
+	y : 0,
+	dirx : 0,
+	diry : 0,
+	speed : 20
+}
 var blockList = [];
 
 var blockW, blockH;
@@ -38,7 +45,12 @@ var blockW, blockH;
 var keymap = [];
 
 var run = false;
+
+var img = new Image();
+
 function initialize() {
+	
+	img.src = "test.png"
     env.backColor = 'rgb(100,100,255)'
 
     console.log("init");
@@ -55,6 +67,16 @@ function initialize() {
     $("#myCanvas").focus();
     player.ay = 0;
     
+    canvas.onmousedown = function() {
+    	rope.dirx = (event.clientX - player.x);
+    	rope.diry = (event.clientY - player.y);
+    	
+    	rope.dirx /= vec_module(rope.dirx,rope.diry);
+    	rope.diry /= vec_module(rope.dirx,rope.diry);
+    	
+    	rope.x = player.x;
+    	rope.y = player.y;
+    }
     
     // Initialize map
     blockW = canvas.width / map[0].length;
@@ -160,4 +182,6 @@ function draw(ctx) {
     	ctx.fillStyle = block.color;
     	ctx.fillRect(block.x, block.y, block.w, block.h);
     }
+    
+    ctx.drawImage(img,20,0,70,50, 100,100, 50,50);
 }

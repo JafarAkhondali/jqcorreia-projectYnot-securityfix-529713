@@ -20,3 +20,7 @@ function checkOverlap(x1, y1, w1, h1, x2, y2, w2, h2) {
 
 	return 1;
 }
+
+function vec_module(vecx,vecy) {
+	return Math.sqrt(Math.pow(vecx,2) + Math.pow(vecy,2));
+}
