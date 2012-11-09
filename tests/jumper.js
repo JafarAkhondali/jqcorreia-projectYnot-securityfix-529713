@@ -7,10 +7,14 @@ var K_A = 65;
 var K_D = 68;
 var K_W = 87;
 var K_SHIFT = 16;
+var K_LEFT = 37;
+var K_RIGHT = 39;
+var K_PLUS = 187;
+var K_MINUS = 189;
 
 var player = {
-    x : 200,
-    y : 200,
+    x : 1,
+    y : 1,
     vx : 0,
     vy : 0,
     walkspeed : 100,
@@ -46,14 +50,25 @@ var keymap = [];
 
 var run = false;
 
-var img = new Image();
+var map;
+var camera;
+
+function Camera(x,y,w,h) {
+	this.x = x;
+	this.y = y;
+	this.w = w;
+	this.h = h;
+	this.zoom = 1;
+}
 
 function initialize() {
-	
-	img.src = "test.png"
+	console.log("init");
+
+	map = new Map("area01.tmx");
+	camera = new Camera(0,0,640,480);
+	console.log(camera);
     env.backColor = 'rgb(100,100,255)'
 
-    console.log("init");
     $("#myCanvas").bind( {
     	keydown : function(e) {
     	    keycode = e.keyCode;
@@ -78,27 +93,6 @@ function initialize() {
     	rope.y = player.y;
     }
     
-    // Initialize map
-    blockW = canvas.width / map[0].length;
-    blockH = canvas.height / map.length;
-    
-    console.log(blockW, blockH);
-    
-    var t = 0;
-
-    for(y = 0; y < map.length; y++) {
-    	for(x = 0; x < map[1].length; x++) {
-    		if(map[y][x] != 0) {
-    			blockList[t++] = {
-    				x : x * blockW,
-    				y : y * blockH,
-    				w : blockW,
-    				h : blockH,
-    				color : 'rgb(0,'+(Math.floor(Math.random()*255))+',0)'
-    			};
-    		}
-    	}
-    }
 }
 
 var c = 0;
@@ -122,6 +116,18 @@ function keyEvents() {
 	if(keymap[K_SHIFT]) {
 		run = true;
 	}
+	if(keymap[K_LEFT]) {
+		camera.x -= 5;
+	}	
+	if(keymap[K_RIGHT]) {
+		camera.x += 5;
+	}
+	if(keymap[K_PLUS]) {
+		camera.zoom -= 0.05;
+	}	
+	if(keymap[K_MINUS]) {
+		camera.zoom += 0.05;
+	}
 	// Release events
 	if(!keymap[K_SHIFT]) {
 		run = false;
@@ -131,14 +137,12 @@ function keyEvents() {
 		player.vx = 0;
 	}
 }
-
+var first = true;
 function update(time) {
     keyEvents();
     
 	var ax = player.ax;
     var ay = scene.gravity + player.ay;
-
-
     
 //    if(player.vx > 0) ax = -scene.friction;
 //    if(player.vx < 0) ax = scene.friction;
@@ -148,40 +152,57 @@ function update(time) {
     
     onawall = 0;
     base = false;
-    for(var i in blockList) {
-    	
-    	var block = blockList[i];
-    	var res = checkOverlap(player.x + player.vx * time, player.y, 10, 10, block.x, block.y, blockW, blockH);
-    	if(res) {
-    		player.vx = 0;
-    		if(player.x < block.x + blockW)
-    			onawall = 1;
-    		if(player.x + 10 > block.x)
-    			onawall = 2;
-    	}
+    for(var y in map.tiles) {
+		for ( var x in map.tiles[y]) {
+			var tile = map.tiles[y][x];
+			if(tile.gid == 0) continue;
+			var res = checkOverlap(player.x + player.vx * time, player.y, 10,
+					10, tile.x, tile.y, tile.w, tile.h);
+			if (res) {
+//				console.log(tile.gid,player.x + player.vx * time,player.y , 10,
+//						10, tile.x, tile.y, tile.w, tile.h);
+//				player.vx = 0;
+				if (player.x < tile.x + tile.w)
+					onawall = 1;
+				if (player.x + 10 > tile.x)
+					onawall = 2;
+			}
+		}
     }
     player.x = player.x + player.vx * time;
-    
-    for(var i in blockList) {
-    	var block = blockList[i];
-    	var res = checkOverlap(player.x, player.y + player.vy * time, 10, 10, block.x, block.y, blockW, blockH);
-    	if(res) {
-    		player.vy = 0;
-    		if(player.y < block.y + blockH)
-    			base = true;
-    	}
+
+    for(var y in map.tiles) {
+		for ( var x in map.tiles[y]) {
+			var tile = map.tiles[y][x];
+			if(tile.gid == 0) continue;
+			var res = checkOverlap(player.x, player.y + player.vy * time, 10,
+					10, tile.x, tile.y, tile.w, tile.h);
+			if (res) {
+//				console.log(tile.gid,player.x,player.y + player.vy * time, 10,
+//						10, tile.x, tile.y, tile.w, tile.h);
+				player.vy = 0;
+				if (player.y < tile.y + tile.h)
+					base = true;
+			}
+		}
     }
     player.y = player.y + player.vy * time;
 }
 
 function draw(ctx) {
+	ctx.save();
+	console.log(camera.x,camera.y);
+	ctx.translate(-camera.x,-camera.y);
+	ctx.scale(camera.zoom, camera.zoom);
     ctx.fillRect(player.x,player.y,10,10);
     ctx.fillText(keycode,20,20);
-    for(var i in blockList) {
-    	var block = blockList[i];
-    	ctx.fillStyle = block.color;
-    	ctx.fillRect(block.x, block.y, block.w, block.h);
-    }
-    
-    ctx.drawImage(img,20,0,70,50, 100,100, 50,50);
+	for ( var y = 0; y < map.tiles.length; y++) {
+		for ( var x = 0; x < map.tiles[0].length; x++) {
+			var tile = map.tiles[y][x];
+			var coord = map.getTilesetCoordinates(tile.gid);
+			ctx.drawImage(map.tileset, coord.x * 32, coord.y * 32, tile.w,
+					tile.h, tile.x, tile.y, tile.w, tile.h);
+		}
+	}
+	ctx.restore();
 }

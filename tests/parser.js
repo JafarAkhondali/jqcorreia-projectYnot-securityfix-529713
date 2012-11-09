@@ -3,76 +3,106 @@ var image = new Image();
 var tileW = 32;
 var tileH = 32;
 
-var numTilesW;
-var numTilesH;
+function Tile(x1, y1, w1, h1, gid1) {
+	console.log(x1, y1, w1, h1, gid1);
+	this.x = x1;
+	this.y = y1;
+	this.w = w1;
+	this.h = h1;
+	this.gid = gid1;
+}
 
-function getCoordinates(gid) {
-	var ry = Math.floor(gid / numTilesW);
-	var rx = gid - ry * numTilesW;
-	return {
-		x : rx - 1,
-		y : ry
+function Map(source) {
+	var self = this;
+
+	this.numTilesW = 0;
+	this.numTilesH = 0;
+	this.tileXSize = 0;
+	this.tileYSize = 0;
+	this.tiles = [];
+
+	this.tileset = new Image();
+	this.tileset.src = "tileset.png";
+	this.tilesetNumTilesW;
+	this.tilesetNumTilesH;
+
+	this.tileset.onload = function() {
+		console.log("Tileset loaded");
+		self.tilesetNumTilesW = self.tileset.width / tileW;
+		self.tilesetNumTilesH = self.tileset.height / tileH;
+	}
+
+	this.getTilesetCoordinates = function(gid) {
+		var ry = Math.floor(gid / self.tilesetNumTilesW);
+		var rx = gid - ry * self.tilesetNumTilesW;
+		return {
+			x : rx - 1,
+			y : ry
+		}
 	};
-}
 
-var map = {
-	numTilesW : 0,
-	numTilesH : 0,
-	tileXSize : 0,
-	tileYSize : 0,
-	tiles : []
-}
+	this.parse = function(data) {
 
-function initialize() {
-	// var xmlhttp = new XMLHttpRequest();
-	// xmlhttp.open("GET", "./area01.tmx", false);
-	// xmlhttp.setRequestHeader('Content-Type', 'text/xml');
-	// xmlhttp.send("");
-	// xmlDoc = xmlhttp.responseXML;
-	//	
-	// console.log(xmlDoc.getElementsByTagName("map"));
+		// XML Processing
+		var mapXml = data.getElementsByTagName("map")[0];
+		this.numTilesW = mapXml.getAttribute("width");
+		this.numTilesH = mapXml.getAttribute("height");
+		this.tileXSize = mapXml.getAttribute("tilewidth");
+		this.tileYSize = mapXml.getAttribute("tileheight");
+		var xmltileList = mapXml.getElementsByTagName("layer")[0]
+				.getElementsByTagName("tile");
+
+		console.log(this.numTilesW, this.numTilesH, this.tileXSize,
+				this.tileYSize);
+		var a = [];
+		var y = 0;
+		for ( var x = 0; x < xmltileList.length; x++) {
+			// a[x - y * this.numTilesW] = tileList[x].getAttribute("gid");
+			
+			var tile = new Tile(x * this.tileXSize - y * this.tileXSize * this.numTilesW,
+					y * this.tileYSize,
+					this.tileXSize, 
+					this.tileYSize, 
+					xmltileList[x].getAttribute("gid")
+			);
+			
+			a[x - y * this.numTilesW] = tile;
+			if ((x + 1) % this.numTilesW == 0) {
+				self.tiles[y] = a;
+				a = [];
+				y++;
+			}
+		}
+	}
+
 	$.get("area01.tmx", function(data) {
-		parse(data);
+		self.parse(data);
 	}, "xml");
-	image.src = "tileset.png";
-	
-	numTilesW = image.width / tileW;
-	numTilesH = image.height / tileH;
-	
-	console.log(getCoordinates(21));
 }
 
-function parse(data) {
-	var mapXml = data.getElementsByTagName("map")[0];
-	map.numTilesW = mapXml.getAttribute("width");
-	map.numTilesH = mapXml.getAttribute("height");
-	map.tileXSize = mapXml.getAttribute("tilewidth");
-	map.tileYSize = mapXml.getAttribute("tileheight");
+var map;
 
-	var tileList = mapXml.getElementsByTagName("layer")[0]
-			.getElementsByTagName("tile");
-	console.log(tileList);
-	var a = [];
-	var y = 0;
-	for ( var x = 0; x < tileList.length; x++) {
-		a[x - y * map.numTilesW] = tileList[x].getAttribute("gid");
-		if ((x + 1) % map.numTilesW == 0) {
-			map.tiles[y] = a;
-			a = [];
-			y++;
-		}
-	}
-}
-
-function update(time) {
-
-}
-
-function draw(ctx) {
-	for ( var y = 0; y < map.tiles.length; y++) {
-		for ( var x = 0; x < map.tiles[0].length; x++) {
-			 var coord = getCoordinates(map.tiles[y][x]);
-			 ctx.drawImage(image, coord.x * 32, coord.y * 32, 32, 32, x * 32, y * 32, 32, 32);
-		}
-	}
-}
+//function initialize() {
+//	map = new Map("area01.tmx");
+//
+//	console.log(map);
+//	console.log(map.getTilesetCoordinates(21));
+//}
+//
+//function update(time) {
+//
+//}
+//var once = false;
+//function draw(ctx) {
+//	for ( var y = 0; y < map.tiles.length; y++) {
+//		for ( var x = 0; x < map.tiles[0].length; x++) {
+//			var tile = map.tiles[y][x];
+//			var coord = map.getTilesetCoordinates(tile.gid);
+//			if (!once && tile.gid != 0)
+//				console.log(tile, coord);
+//			ctx.drawImage(map.tileset, coord.x * 32, coord.y * 32, tile.w,
+//					tile.h, tile.x, tile.y, tile.w, tile.h);
+//		}
+//	}
+//	once = true;
+//}
