@@ -26,15 +26,6 @@ var scene = {
     gravity : -980
 }
 
-var map = [[1,1,1,1,1,1,1,1,1,1],
-           [1,0,0,0,0,0,0,0,0,1],
-           [1,0,0,0,1,0,0,0,0,1],
-           [1,0,1,0,0,0,0,0,0,1],
-           [1,0,0,0,0,1,0,0,0,1],
-           [1,0,0,0,0,0,0,0,0,1],
-           [1,0,0,0,0,0,1,0,0,1],
-           [1,1,1,1,1,1,1,1,1,1]];
-
 var rope = {
 	x : 0,
 	y : 0,
@@ -152,6 +143,7 @@ function update(time) {
     
     onawall = 0;
     base = false;
+    
     for(var y in map.tiles) {
 		for ( var x in map.tiles[y]) {
 			var tile = map.tiles[y][x];
@@ -161,7 +153,8 @@ function update(time) {
 			if (res) {
 //				console.log(tile.gid,player.x + player.vx * time,player.y , 10,
 //						10, tile.x, tile.y, tile.w, tile.h);
-//				player.vx = 0;
+				console.log("wall", x, y);
+				player.vx = 0;
 				if (player.x < tile.x + tile.w)
 					onawall = 1;
 				if (player.x + 10 > tile.x)
@@ -180,6 +173,7 @@ function update(time) {
 			if (res) {
 //				console.log(tile.gid,player.x,player.y + player.vy * time, 10,
 //						10, tile.x, tile.y, tile.w, tile.h);
+				console.log("floor", x, yconsole.log("wall"))
 				player.vy = 0;
 				if (player.y < tile.y + tile.h)
 					base = true;
@@ -191,7 +185,6 @@ function update(time) {
 
 function draw(ctx) {
 	ctx.save();
-	console.log(camera.x,camera.y);
 	ctx.translate(-camera.x,-camera.y);
 	ctx.scale(camera.zoom, camera.zoom);
     ctx.fillRect(player.x,player.y,10,10);
