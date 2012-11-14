@@ -13,12 +13,12 @@ function checkOverlap(x1, y1, w1, h1, x2, y2, w2, h2) {
 	var right2 = x2 + w2;
 	var bottom2 = y2 + h2;
 	
-	if(bottom1 < top2) { return 0; }
-	if(top1 > bottom2) { return 0; }
-	if(right1 < left2) { return 0; }
-	if(left1 > right2) { return 0; }
+	if(bottom1 < top2) { return { v:0, r:"bottom1 < top2"}; }
+	if(top1 > bottom2) { return { v:0, r:"top1 > bottom2"}; }
+	if(right1 < left2) { return { v:0, r:"right1 < left2"}; }
+	if(left1 > right2) { return { v:0, r:"left1 > right2"}; }
 
-	return 1;
+	return { v : 1 };
 }
 
 function vec_module(vecx,vecy) {

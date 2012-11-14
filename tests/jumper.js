@@ -150,10 +150,7 @@ function update(time) {
 			if(tile.gid == 0) continue;
 			var res = checkOverlap(player.x + player.vx * time, player.y, 10,
 					10, tile.x, tile.y, tile.w, tile.h);
-			if (res) {
-//				console.log(tile.gid,player.x + player.vx * time,player.y , 10,
-//						10, tile.x, tile.y, tile.w, tile.h);
-				console.log("wall", x, y);
+			if (res.v) {
 				player.vx = 0;
 				if (player.x < tile.x + tile.w)
 					onawall = 1;
@@ -170,10 +167,7 @@ function update(time) {
 			if(tile.gid == 0) continue;
 			var res = checkOverlap(player.x, player.y + player.vy * time, 10,
 					10, tile.x, tile.y, tile.w, tile.h);
-			if (res) {
-//				console.log(tile.gid,player.x,player.y + player.vy * time, 10,
-//						10, tile.x, tile.y, tile.w, tile.h);
-				console.log("floor", x, yconsole.log("wall"))
+			if (res.v) {
 				player.vy = 0;
 				if (player.y < tile.y + tile.h)
 					base = true;

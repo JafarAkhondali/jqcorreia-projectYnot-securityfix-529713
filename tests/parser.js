@@ -45,10 +45,10 @@ function Map(source) {
 
 		// XML Processing
 		var mapXml = data.getElementsByTagName("map")[0];
-		this.numTilesW = mapXml.getAttribute("width");
-		this.numTilesH = mapXml.getAttribute("height");
-		this.tileXSize = mapXml.getAttribute("tilewidth");
-		this.tileYSize = mapXml.getAttribute("tileheight");
+		this.numTilesW = parseFloat(mapXml.getAttribute("width"));
+		this.numTilesH = parseFloat(mapXml.getAttribute("height"));
+		this.tileXSize = parseFloat(mapXml.getAttribute("tilewidth"));
+		this.tileYSize = parseFloat(mapXml.getAttribute("tileheight"));
 		var xmltileList = mapXml.getElementsByTagName("layer")[0]
 				.getElementsByTagName("tile");
 
@@ -57,8 +57,6 @@ function Map(source) {
 		var a = [];
 		var y = 0;
 		for ( var x = 0; x < xmltileList.length; x++) {
-			// a[x - y * this.numTilesW] = tileList[x].getAttribute("gid");
-			
 			var tile = new Tile(x * this.tileXSize - y * this.tileXSize * this.numTilesW,
 					y * this.tileYSize,
 					this.tileXSize, 
