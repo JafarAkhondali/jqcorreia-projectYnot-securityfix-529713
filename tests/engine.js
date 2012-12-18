@@ -1,42 +1,47 @@
-var canvas;
-var ctx;
+//var canvas;
+
+//var ctx;
 var time = new Date().getTime();
 
 var env = {
+	width : 640,
+	height : 480,
     backColor : 'rgb(255,255,255)'
 }
 
-window.onload = function() {
-    canvas = document.getElementById('myCanvas');
-    ctx = canvas.getContext('2d');
+Engine = function(parent) {
+	this.self = this;
+	this.parent = parent;
+	
+	this.canvas = document.createElement("canvas");
+	this.canvas.className = 'canvas';
+	this.canvas.id = 'canvas';
 
-    initialize();
-    setInterval(loop,1000/60);
-};
-
-requestAnimFrame = (function() {
-  return window.requestAnimationFrame ||
-     window.webkitRequestAnimationFrame ||
-     window.mozRequestAnimationFrame ||
-     window.oRequestAnimationFrame ||
-     window.msRequestAnimationFrame ||
-     function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
-       window.setTimeout(callback, 1000/15);
-     };
-})();
+	this.canvas.width = env.width;
+	this.canvas.height = env.height;
+	this.ctx = this.canvas.getContext('2d');
+	
+	parent.appendChild(this.canvas);
+	console.log("before set interval");
+}
 
 
-
-function loop() {
+Engine.prototype.loop = function() {
     var timeElapsed = (new Date().getTime() - time)/ 1000;
     time = new Date().getTime();
     
-    ctx.save();
-    ctx.fillStyle = env.backColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.restore();
+    this.ctx.save();
+    this.ctx.fillStyle = env.backColor;
+    this.ctx.fillRect(0, 0, canvas.width, canvas.height);
+    this.ctx.restore();
 
     update(timeElapsed);
-    draw(ctx);
+    draw(this.ctx);
     //requestAnimFrame(loop);
 }
+//
+Engine.prototype.start = function() {
+	setInterval(this.loop, 1000/60);
+}
+
+Engine.prototype.env = env;

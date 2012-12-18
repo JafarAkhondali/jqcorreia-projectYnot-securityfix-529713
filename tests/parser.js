@@ -4,7 +4,7 @@ var tileW = 32;
 var tileH = 32;
 
 function Tile(x1, y1, w1, h1, gid1) {
-	console.log(x1, y1, w1, h1, gid1);
+//	console.log(x1, y1, w1, h1, gid1);
 	this.x = x1;
 	this.y = y1;
 	this.w = w1;
