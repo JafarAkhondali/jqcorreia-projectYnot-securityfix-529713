@@ -54,15 +54,14 @@ function Camera(x,y,w,h) {
 
 function initialize() {
 	console.log("init");
-	var engine = new Engine(document.body);
-	engine.start();
 	
 	map = new Map("area01.tmx");
 	camera = new Camera(0,0,640,480);
 	console.log(camera);
     env.backColor = 'rgb(100,100,255)'
 
-    $(canvas).bind( {
+    var engine = new Engine(document.body);
+    $(engine.canvas).bind( {
     	keydown : function(e) {
     	    keycode = e.keyCode;
     	    keymap[e.keyCode] = true;
@@ -72,10 +71,10 @@ function initialize() {
     	}
     });
     
-    $(canvas).focus();
+    $(engine.canvas).focus();
     player.ay = 0;
     
-    canvas.onmousedown = function() {
+    engine.canvas.onmousedown = function() {
     	rope.dirx = (event.clientX - player.x);
     	rope.diry = (event.clientY - player.y);
     	
@@ -86,6 +85,7 @@ function initialize() {
     	rope.y = player.y;
     	console.log(rope.dirx, rope.diry, rope.x, rope.y);
     }
+    engine.start();
     
 }
 
@@ -197,3 +197,4 @@ function draw(ctx) {
 	}
 	ctx.restore();
 }
+

@@ -1,5 +1,5 @@
 //Constructor
-Entity = function(image, canvas)
+function Engine(image, canvas)
 {
 	this.posX = 0;
 	this.posY = 0;
@@ -18,7 +18,7 @@ Entity = function(image, canvas)
 //Methods
 Entity.prototype.draw = function(context2d) 
 {	
-	/***** FUTURAMENTE É PARA REMOVER O CÓDIGO E POR A EXTENDER ESTA CLASE E AÍ SIM DEFINIR O DRAW ******/	
+	/***** FUTURAMENTE ï¿½ PARA REMOVER O Cï¿½DIGO E POR A EXTENDER ESTA CLASE E Aï¿½ SIM DEFINIR O DRAW ******/	
 	//context2d.drawImage(this.image, this.posX, this.posY);
 	var invertY = canvas.height - this.posY;
 	var factorScaleY = invertY * 0.00175;
@@ -40,7 +40,7 @@ Entity.prototype.draw = function(context2d)
 
 Entity.prototype.update = function(world, timeElapsed) 
 {
-	/***** FUTURAMENTE É PARA REMOVER O CÓDIGO E POR A EXTENDER ESTA CLASE E AÍ SIM DEFINIR O UPDATE ******/	
+	/***** FUTURAMENTE ï¿½ PARA REMOVER O Cï¿½DIGO E POR A EXTENDER ESTA CLASE E Aï¿½ SIM DEFINIR O UPDATE ******/	
 	var accX = this.accX;
 	var accY = this.accY + world.gravity;
 	
