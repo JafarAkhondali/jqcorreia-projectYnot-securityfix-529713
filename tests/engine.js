@@ -20,9 +20,6 @@ function Engine(parent) {
 	console.log("before set interval");
 	this.time = new Date().getTime();
 	
-//	this.start = start;
-//	this.loop = loop;
-	
 	this.start = function() {
 		setInterval(this.loop, 1000/60);
 	}
