@@ -8,23 +8,18 @@ require(['lib/jquery.min','resources/preloader','resources/tiledmap', 'lib/three
 	window.base = base; // Push base to global namespace
 
 	// UNIT TESTING
-	resources = [];
+	var resources = [];
 
-	console.log("Preloader unit test");
+	console.log("Core unit test");
 
-	resources['image1'] = new R.type.Image("http://img.gawkerassets.com/img/1863znwyceav1jpg/original.jpg");
-	resources['image2'] = new R.type.Image("http://heart-homeconnection.com/wp-content/uploads/big+bubble-1600x1200.jpg");
-	resources['image3'] = new R.type.Image("http://wallpapers.free-review.net/wallpapers/42/Big_wave.jpg");
-	resources['data1'] = new R.type.Data("../assets/area01.tmx");
+	resources['0'] = new R.type.Image("../assets/tileset.png");
+	resources['1'] = new R.type.Data("../assets/area01.tmx");
 
-	var cb = function() { 
+	var posLoad = function() { 
 		console.log("All resources loaded");
-		console.log(resources['data1'].obj);
+		var map = new base.R.type.TiledMap(resources['1'].obj, resources['0'].obj);
+		console.log(map);
 	};
 
-	new base.R.Loader(resources,cb).loadResources();		
-
-	var c = new base.T.CubeGeometry(100,100,100,1,1);
-
-	console.log(c);
+	new base.R.Loader(resources,posLoad).loadResources();		
 });

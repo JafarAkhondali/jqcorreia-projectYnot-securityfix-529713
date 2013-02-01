@@ -1,5 +1,6 @@
 define(['resources/preloader'], function(R) {
 	R.type.TiledMap = function (data, tileset) {
+		console.log(123,data);
 		var self = this;
 
 		this.numTilesW = 0;
@@ -9,20 +10,6 @@ define(['resources/preloader'], function(R) {
 		this.tiles = [];
 
 		this.tileset = tileset;
-		this.tilesetNumTilesW;
-		this.tilesetNumTilesH;
-
-		this.load = function(callback) {
-			self.tileset.src = tileset;
-			$.get(source, function(data) {
-				self.parse(data);
-			}, "xml");
-		}
-
-		this.tileset.onload = function() {
-			self.tilesetNumTilesW = self.tileset.width / tileW;
-			self.tilesetNumTilesH = self.tileset.height / tileH;
-		}
 
 		this.getTilesetCoordinates = function(gid) {
 			var ry = Math.floor(gid / self.tilesetNumTilesW);
@@ -44,10 +31,13 @@ define(['resources/preloader'], function(R) {
 			var xmltileList = mapXml.getElementsByTagName("layer")[0]
 			.getElementsByTagName("tile");
 
+			this.tilesetNumTilesW = this.tileset.width / this.tileXSize;
+			this.tilesetNumTilesH = this.tileset.height / this.tileYSize;
+
 			var a = [];
 			var y = 0;
 			for ( var x = 0; x < xmltileList.length; x++) {
-				var tile = new this.Tile(x * this.tileXSize - y * this.tileXSize * this.numTilesW,
+				var tile = new R.type.TiledMap.Tile(x * this.tileXSize - y * this.tileXSize * this.numTilesW,
 					y * this.tileYSize,
 					this.tileXSize, 
 					this.tileYSize, 
@@ -61,8 +51,9 @@ define(['resources/preloader'], function(R) {
 					y++;
 				}
 			}
-			this.callback();
 		}
+
+		this.parse(data);
 	}
 
 	R.type.TiledMap.Tile = function (x1, y1, w1, h1, gid1) {

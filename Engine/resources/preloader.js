@@ -19,8 +19,8 @@ define(['lib/jquery.min'], function() {
 
 		this._callback = function() {
 			c++;
-			console.log(c, Object.keys(self.list).length-1);
-			if(c == Object.keys(self.list).length-1) {
+			console.log(c, Object.keys(self.list).length);
+			if(c == Object.keys(self.list).length) {
 				self.ondone();
 			}
 		}
