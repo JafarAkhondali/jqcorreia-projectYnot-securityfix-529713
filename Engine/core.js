@@ -1,8 +1,9 @@
-require(['resources/preloader','resources/tiledmap'], function(R) {	
+require(['lib/jquery.min','resources/preloader','resources/tiledmap', 'lib/three.min'], function($,R) {	
 
 	var base = base || {};
 
 	base.R = R;
+	base.T = THREE;
 
 	window.base = base; // Push base to global namespace
 
@@ -21,5 +22,9 @@ require(['resources/preloader','resources/tiledmap'], function(R) {
 		console.log(resources['data1'].obj);
 	};
 
-	new R.Loader(resources,cb).loadResources();		
+	new base.R.Loader(resources,cb).loadResources();		
+
+	var c = new base.T.CubeGeometry(100,100,100,1,1);
+
+	console.log(c);
 });

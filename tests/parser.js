@@ -12,7 +12,7 @@ function Tile(x1, y1, w1, h1, gid1) {
 	this.gid = gid1;
 }
 
-function Map(source) {
+function Map(source, tileset, callback) {
 	var self = this;
 
 	this.numTilesW = 0;
@@ -22,7 +22,7 @@ function Map(source) {
 	this.tiles = [];
 
 	this.tileset = new Image();
-	this.tileset.src = "tileset.png";
+	this.tileset.src = tileset;
 	this.tilesetNumTilesW;
 	this.tilesetNumTilesH;
 
@@ -52,8 +52,8 @@ function Map(source) {
 		var xmltileList = mapXml.getElementsByTagName("layer")[0]
 				.getElementsByTagName("tile");
 
-		console.log(this.numTilesW, this.numTilesH, this.tileXSize,
-				this.tileYSize);
+		//console.log(this.numTilesW, this.numTilesH, this.tileXSize,
+		//		this.tileYSize);
 		var a = [];
 		var y = 0;
 		for ( var x = 0; x < xmltileList.length; x++) {
@@ -73,8 +73,10 @@ function Map(source) {
 		}
 	}
 
-	$.get("area01.tmx", function(data) {
+	$.get(source, function(data) {
 		self.parse(data);
+		if(callback != undefined)
+			callback(data);
 	}, "xml");
 }
 

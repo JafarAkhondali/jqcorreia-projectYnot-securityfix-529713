@@ -55,7 +55,7 @@ function Camera(x,y,w,h) {
 function initialize() {
 	console.log("init");
 	
-	map = new Map("area01.tmx");
+	map = new Map("area01.tmx","tileset.png");
 	camera = new Camera(0,0,640,480);
 	console.log(camera);
     env.backColor = 'rgb(100,100,255)'
