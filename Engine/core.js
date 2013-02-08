@@ -1,10 +1,15 @@
-define(['lib/jquery.min','resources/preloader','resources/tiledmap', 'lib/three.min'], function($,R) {	
+define(['lib/jquery.min', 
+		'lib/three.min',
+		'resources/scenemanager',
+		'resources/preloader'
+		], 
+function($,T,SceneManager,R) {	
 	console.log("core loading")
 	var base = base || {};
 
-	base.R = R;
 	base.T = THREE;
-
+	base.SM = new SceneManager();
+	base.R = R;
 	base.T.Object3D.prototype.update = function() {
 		
 	}
@@ -28,8 +33,11 @@ define(['lib/jquery.min','resources/preloader','resources/tiledmap', 'lib/three.
 	}
 
 	base._loop = function() {
-		base.scene.update();
-		base.renderer.render(base.scene, base.camera);
+		var scene = base.SM.currentScene;
+		if(scene != {}) {
+			scene.scene.update();
+			base.renderer.render(scene.scene, base.camera);
+		}
 	};
 
 	window.base = base;
