@@ -9,11 +9,12 @@ define(['lib/jquery.min'], function() {
 		var c = 0;
 
 		this.loadResources = function() {
+			console.log("Loading resources");
 			this._load();	
 		}
 
 		this._load = function() {
-			for(var i in this.list)
+			for(var i in this.list) 
 				this.list[i].load(this._callback);
 		}
 
@@ -21,7 +22,7 @@ define(['lib/jquery.min'], function() {
 			c++;
 			console.log(c, Object.keys(self.list).length);
 			if(c == Object.keys(self.list).length) {
-				self.ondone();
+				if(self.ondone) self.ondone();
 			}
 		}
 	}

@@ -8,10 +8,10 @@ function($,T,SceneManager,R) {
 	var base = base || {};
 
 	base.T = THREE;
-	base.SM = new SceneManager();
+	base.SM = SceneManager;
 	base.R = R;
 	base.T.Object3D.prototype.update = function() {
-		
+
 	}
 
 	base.T.Scene.prototype.update = function() {
